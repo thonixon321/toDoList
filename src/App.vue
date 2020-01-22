@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import addToDo from './components/add-to-do.vue';
 import completedTasks from './components/completed-tasks.vue';
 import incompleteTasks from './components/incomplete-tasks.vue';
@@ -23,10 +24,17 @@ export default {
 
   computed: {
 
+    ...mapState({
+      currentTodoList: state => state.todos
+    })
+
   },
 
 
   methods: {
+     ...mapActions({
+      callStore: 'callStore'
+    }),
 
   },
 
@@ -59,4 +67,13 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toDoItem {
+    display: flex;
+  }
 </style>
