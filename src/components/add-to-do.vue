@@ -50,6 +50,7 @@ export default {
         toDoObj.description = this.toDoItem;
         toDoObj.id = this.idIteration;
         toDoObj.saved = true;
+        toDoObj.deleted = false;
 
         this.callAddToDo(toDoObj);
       }
