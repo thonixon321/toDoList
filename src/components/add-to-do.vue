@@ -11,7 +11,7 @@
 
 <script>
 
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'AddToDo',
@@ -25,6 +25,14 @@ export default {
 
   },
 
+  computed: {
+
+    ...mapGetters({
+      allTodos: 'allTodos'
+    })
+
+  },
+
 
 
   methods: {
@@ -33,15 +41,19 @@ export default {
     }),
 
     updateTasks: function () {
-      var toDoObj = {};
+      var toDoObj = {},
+          idNum = parseFloat(this.allTodos.length);
 
-      this.idIteration++;
+      if (this.toDoItem !== '') {
+        this.idIteration = idNum++;
+        toDoObj.status = 'incomplete';
+        toDoObj.description = this.toDoItem;
+        toDoObj.id = this.idIteration;
+        toDoObj.saved = true;
+        toDoObj.deleted = false;
 
-      toDoObj.status = 'incomplete';
-      toDoObj.description = this.toDoItem;
-      toDoObj.id = this.idIteration;
-
-      this.callAddToDo(toDoObj);
+        this.callAddToDo(toDoObj);
+      }
       this.addToDo = false;
     }
   }
