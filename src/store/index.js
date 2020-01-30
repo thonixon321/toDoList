@@ -21,6 +21,7 @@ export const store = new Vuex.Store({
  actions: {
 
   callAddToDo (state, todo) {
+    console.log(todo);
     state.commit('addAToDo', todo);
   },
 
@@ -48,7 +49,7 @@ export const store = new Vuex.Store({
 
   addAToDo (state, todo) {
     state.todo.push(todo);
-
+    console.log(state);
   },
 
   completeAToDo (state, todo) {

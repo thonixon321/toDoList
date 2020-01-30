@@ -18,7 +18,7 @@
       <hr>
 
       <transition name="bounce">
-        <router-view @loadTitle='changeTitle'>
+        <router-view  @loadTitle='changeTitle'>
 
         </router-view>
       </transition>
@@ -32,11 +32,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import { axiosHandler } from './mixins/axiosHandler';
 
 
 export default {
   name: 'app',
+
+  mixins: [axiosHandler],
 
   data: function() {
     return {
@@ -46,7 +49,6 @@ export default {
   },
 
   computed: {
-
     ...mapGetters({
       allTodos: 'allTodos'
     })
@@ -55,6 +57,10 @@ export default {
 
 
   methods: {
+    ...mapActions({
+      callAddToDo: 'callAddToDo'
+    }),
+
     changeTitle: function(passedTitle) {
       this.header = passedTitle;
     },
@@ -62,14 +68,39 @@ export default {
     clearStorage: function() {
       window.localStorage.clear();
 
-    }
+    },
+
+    fetchTodos: function() {
+       var settingsObj = {
+          url: 'https://my-json-server.typicode.com/thonixon321/tasksDB/tasks',
+          method: 'GET',
+          callBack: this.fetchTodosResponse
+        };
+
+        this.sendAxios({}, settingsObj);
+      },
+
+    fetchTodosResponse: function(res) {
+      console.log(res.data);
+
+      for (var i=0; i < res.data.length; i++) {
+        this.callAddToDo(res.data[i]);
+      }
+
+    },
+
+
 
   },
 
 
 
   created: function() {
-
+    //don't want to keep adding the todos from the database
+    //if they are already in local storage
+    if(this.allTodos.length == 0) {
+      this.fetchTodos();
+    }
   },
 
 

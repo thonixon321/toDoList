@@ -5,7 +5,7 @@
       <div v-if="item.status == 'incomplete' && item.deleted == false">
         <div class="taskContain" v-if="item.saved == true">
           <div class='checkBoxContainer'>
-            <input @click='callCompleteToDo(item)' :id="'task_'+index" type='checkbox'>
+            <input @click='completeTheToDo(item.id, item.description, item.saved)' :id="'task_'+index" type='checkbox'>
           </div>
           <div class='labelContainer'>
             <label :for="'task_'+index">{{ item.description }}</label>
@@ -21,7 +21,7 @@
         </div>
         <div class="taskContain" v-else-if="item.deleted == false">
           <div class='checkBoxContainer'>
-            <input @click='callCompleteToDo(item)' :id="'task_'+index" type='checkbox'>
+            <input @click='completeTheToDo(item.id, item.description, item.saved)' :id="'task_'+index" type='checkbox'>
           </div>
           <div class='labelContainer'>
             <input type='text' v-model="item.description">
@@ -43,6 +43,7 @@
 
 <script>
 
+  import { axiosHandler } from '../mixins/axiosHandler';
   import { mapGetters, mapActions } from 'vuex';
   import WarningOverlay from './warning-overlay.vue'
   import EditIcon from '../assets/editIcon.vue';
@@ -62,18 +63,17 @@
     },
 
 
+    mixins: [axiosHandler],
+
+
 
     computed: {
       ...mapGetters({
             allTodos: 'allTodos'
-      })
-    },
-
-
-
-    props: {
+          })
 
     },
+
 
 
 
@@ -81,6 +81,32 @@
       ...mapActions({
         callCompleteToDo: 'callCompleteToDo'
       }),
+
+      completeTheToDo: function(id, desc, saved) {
+        var payLoadObj = {
+          id: id,
+          deleted: false,
+          description: desc,
+          saved: saved,
+          status: "complete"
+        },
+        settingsObj = {
+          url: 'https://my-json-server.typicode.com/thonixon321/tasksDB/tasks/'+id+'',
+          method: 'PUT',
+          callBack: this.completeTheToDoResponse
+        };
+
+        this.sendAxios(payLoadObj, settingsObj);
+      },
+
+
+      completeTheToDoResponse: function(res) {
+        console.log(res.data);
+        //call the action
+        this.callCompleteToDo(res.data);
+
+      },
+
 
       openIt: function(item) {
 
@@ -108,6 +134,12 @@
 
 
     mounted: function() {
+
+
+    },
+
+
+    created: function() {
 
     },
 
